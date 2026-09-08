@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Dewan Al Farabi</title>
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Check Authentication -->
+    <script>
+        if (!sessionStorage.getItem('adminLogged')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+            <button class="logout-btn" onclick="logout()">Log Keluar</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#dashboard" class="menu-item active" onclick="showSection('dashboard')">📊 Dashboard</a></li>
+            <li><a href="#bookings" class="menu-item" onclick="showSection('bookings')">📋 Semua Tempahan</a></li>
+            <li><a href="#ruangan" class="menu-item" onclick="showSection('ruangan')">🏢 Kelola Ruangan</a></li>
+            <li><a href="#laporan" class="menu-item" onclick="showSection('laporan')">📈 Laporan</a></li>
+            <li><a href="#pengaturan" class="menu-item" onclick="showSection('pengaturan')">⚙️ Pengaturan</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1>Dashboard Admin - Dewan Al Farabi</h1>
+            <div class="user-info">
+                <span id="currentTime"></span>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="section-title">
+                <h2>Dashboard Ringkas</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <h3>Jumlah Tempahan</h3>
+                        <p class="stat-number" id="totalBooking">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3>Menunggu Pengesahan</h3>
+                        <p class="stat-number" id="menungguCount">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3>Tempahan Disahkan</h3>
+                        <p class="stat-number" id="disahkanCount">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Total Pendapatan</h3>
+                        <p class="stat-number" id="totalPendapatan">RM 0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-box">
+                    <h3>Status Tempahan</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>Ruangan Paling Popular</h3>
+                    <canvas id="ruanganChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings" class="content-section">
+            <div class="section-title">
+                <h2>Semua Tempahan</h2>
+                <button class="btn btn-secondary" onclick="exportBookingsToCSV()">📥 Export CSV</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="Cari nama, email, atau ID tempahan..." onkeyup="filterBookings()">
+                <select id="statusFilter" onchange="filterBookings()">
+                    <option value="">-- Semua Status --</option>
+                    <option value="Menunggu Pengesahan">Menunggu Pengesahan</option>
+                    <option value="Disahkan">Disahkan</option>
+                    <option value="Selesai">Selesai</option>
+                    <option value="Dibatalkan">Dibatalkan</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table id="bookingsTable" class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Ruangan</th>
+                            <th>Tarikh</th>
+                            <th>Status</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsBody">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Ruangan Section -->
+        <section id="ruangan" class="content-section">
+            <div class="section-title">
+                <h2>Kelola Ruangan</h2>
+                <button class="btn btn-primary" onclick="showAddRuanganForm()">+ Tambah Ruangan</button>
+            </div>
+
+            <div id="addRuanganForm" class="form-container" style="display: none;">
+                <h3>Tambah Ruangan Baru</h3>
+                <form id="ruanganForm">
+                    <div class="form-group">
+                        <label>Nama Ruangan:</label>
+                        <input type="text" id="namaRuangan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kapasiti:</label>
+                        <input type="number" id="kapasiti" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga per Hari (RM):</label>
+                        <input type="number" id="hargaRuangan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi:</label>
+                        <textarea id="deskripsiRuangan" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideAddRuanganForm()">Batal</button>
+                </form>
+            </div>
+
+            <div class="ruangan-list" id="ruanganList">
+                <!-- Data ruangan akan diisi oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- Laporan Section -->
+        <section id="laporan" class="content-section">
+            <div class="section-title">
+                <h2>Laporan Analisis</h2>
+            </div>
+
+            <div class="laporan-container">
+                <div class="laporan-box">
+                    <h3>Statistik Bulanan</h3>
+                    <div id="laporanBulanan">
+                        <!-- Konten laporan akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+
+                <div class="laporan-box">
+                    <h3>Pendapatan per Ruangan</h3>
+                    <table class="laporan-table">
+                        <thead>
+                            <tr>
+                                <th>Ruangan</th>
+                                <th>Total Booking</th>
+                                <th>Pendapatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="laporanRuangan">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pengaturan Section -->
+        <section id="pengaturan" class="content-section">
+            <div class="section-title">
+                <h2>Pengaturan Sistem</h2>
+            </div>
+
+            <div class="setting-box">
+                <h3>Ubah Kata Laluan Admin</h3>
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label>Kata Laluan Lama:</label>
+                        <input type="password" id="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kata Laluan Baru:</label>
+                        <input type="password" id="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Kata Laluan:</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ubah Kata Laluan</button>
+                </form>
+            </div>
+
+            <div class="setting-box">
+                <h3>Cadangan Data</h3>
+                <p>Buat salinan cadangan data tempahan Anda</p>
+                <button class="btn btn-secondary" onclick="backupData()">📦 Buat Cadangan</button>
+                <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Padam Semua Data</button>
+            </div>
+
+            <div class="setting-box">
+                <h3>Tentang Sistem</h3>
+                <p>Sistem Tempahan Dewan Al Farabi v1.0</p>
+                <p>© 2024 Dewan Al Farabi. Semua hak cipta terpelihara.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal untuk Detail Booking -->
+    <div id="bookingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2>Detail Tempahan</h2>
+            <div id="bookingDetail"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="approveBtn" onclick="approveBooking()">Setuju</button>
+                <button class="btn btn-secondary" id="completeBtn" onclick="completeBooking()">Selesai</button>
+                <button class="btn btn-danger" id="cancelBtn" onclick="cancelBooking()">Batalkan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>
