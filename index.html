@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Tempahan Dewan Al Farabi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>Dewan Al Farabi</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">Beranda</a></li>
+                <li><a href="#ruangan">Ruangan</a></li>
+                <li><a href="#booking">Tempahan</a></li>
+                <li><a href="#hubungi">Hubungi Kami</a></li>
+                <li><a href="#login" class="btn-login">Log Masuk</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Tempahan Dewan Al Farabi</h2>
+            <p>Mudah, Cepat dan Selamat - Tempah Ruang Dewan Anda Sekarang</p>
+            <button class="btn btn-primary" onclick="scrollToBooking()">Mula Tempahan</button>
+        </div>
+    </section>
+
+    <!-- Ruangan Section -->
+    <section id="ruangan" class="ruangan">
+        <div class="container">
+            <h2>Pilihan Ruangan Kami</h2>
+            <div class="ruangan-grid">
+                <div class="ruangan-card">
+                    <div class="ruangan-image">Ruang 1</div>
+                    <h3>Dewan Utama</h3>
+                    <p>Kapasiti: 500 orang</p>
+                    <p class="harga">RM 2,000 / hari</p>
+                    <button class="btn btn-secondary" onclick="pilihRuangan('Dewan Utama')">Pilih</button>
+                </div>
+                <div class="ruangan-card">
+                    <div class="ruangan-image">Ruang 2</div>
+                    <h3>Dewan Tengah</h3>
+                    <p>Kapasiti: 300 orang</p>
+                    <p class="harga">RM 1,500 / hari</p>
+                    <button class="btn btn-secondary" onclick="pilihRuangan('Dewan Tengah')">Pilih</button>
+                </div>
+                <div class="ruangan-card">
+                    <div class="ruangan-image">Ruang 3</div>
+                    <h3>Dewan Kecil</h3>
+                    <p>Kapasiti: 150 orang</p>
+                    <p class="harga">RM 800 / hari</p>
+                    <button class="btn btn-secondary" onclick="pilihRuangan('Dewan Kecil')">Pilih</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking">
+        <div class="container">
+            <h2>Borang Tempahan</h2>
+            <div class="booking-form-container">
+                <form id="bookingForm" class="booking-form">
+                    <div class="form-group">
+                        <label for="nama">Nama Panjang:</label>
+                        <input type="text" id="nama" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefon">No. Telefon:</label>
+                        <input type="tel" id="telefon" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ruangan">Pilih Ruangan:</label>
+                        <select id="ruangan" required>
+                            <option value="">-- Pilih Ruangan --</option>
+                            <option value="Dewan Utama">Dewan Utama (RM 2,000)</option>
+                            <option value="Dewan Tengah">Dewan Tengah (RM 1,500)</option>
+                            <option value="Dewan Kecil">Dewan Kecil (RM 800)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tarihMula">Tarikh Mula:</label>
+                            <input type="date" id="tarihMula" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tarihAkhir">Tarikh Akhir:</label>
+                            <input type="date" id="tarihAkhir" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jenisTempahan">Jenis Tempahan:</label>
+                        <select id="jenisTempahan" required>
+                            <option value="">-- Pilih Jenis --</option>
+                            <option value="Majlis Perkahwinan">Majlis Perkahwinan</option>
+                            <option value="Majlis Kenduri">Majlis Kenduri</option>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Konvensyen">Konvensyen</option>
+                            <option value="Persidangan">Persidangan</option>
+                            <option value="Lain-lain">Lain-lain</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jumlahOrang">Anggaran Bilangan Tetamu:</label>
+                        <input type="number" id="jumlahOrang" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="catatan">Catatan Tambahan:</label>
+                        <textarea id="catatan" rows="4" placeholder="Sebarang keperluan khas..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="setuju" required>
+                            Saya bersetuju dengan syarat dan ketentuan
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Hantar Tempahan</button>
+                </form>
+
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <h3>✓ Tempahan Berjaya!</h3>
+                    <p>Terima kasih atas tempahan Anda. Kami akan menghubungi Anda dalam masa 24 jam untuk mengesahkan tempahan.</p>
+                    <button class="btn btn-secondary" onclick="resetForm()">Tempah Lagi</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hubungi Kami Section -->
+    <section id="hubungi" class="hubungi">
+        <div class="container">
+            <h2>Hubungi Kami</h2>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h4>📞 Telefon</h4>
+                    <p>+60-3-XXXX XXXX</p>
+                </div>
+                <div class="contact-card">
+                    <h4>📧 Email</h4>
+                    <p>booking@alfarabi.com</p>
+                </div>
+                <div class="contact-card">
+                    <h4>📍 Alamat</h4>
+                    <p>Jalan Dewan Al Farabi, Kuala Lumpur</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Dewan Al Farabi. Semua hak cipta terpelihara.</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="tutupLogin()">&times;</span>
+            <h2>Log Masuk Admin</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminUser">Nama Pengguna:</label>
+                    <input type="text" id="adminUser" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPass">Kata Laluan:</label>
+                    <input type="password" id="adminPass" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Log Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
